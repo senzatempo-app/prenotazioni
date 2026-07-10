@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1a1a1a">
+  <title></title>
+  <meta name="apple-mobile-web-app-title" content="Gestionale">
+
+  <!-- Favicon e Icone PWA -->
+  <link rel="icon" type="image/png" href="./Frontend/assets/favicon.png">
+  <link rel="apple-touch-icon" href="./Frontend/assets/apple-touch-icon.png">
+  <link rel="manifest" href="./Frontend/manifest.json">
+  
+  <link rel="stylesheet" href="./Frontend/base.css">
+  <link rel="stylesheet" href="./Frontend/components.css">
+  <link rel="stylesheet" href="./Frontend/dashboard.css">
+  <link rel="stylesheet" href="./Frontend/layout.css">
+</head>
+<body>
+
+<div id="app">
+  <div class="loading-container"><div class="spinner"></div></div>
+</div>
+
+<script src="./Frontend/api-bridge.js"></script>
+<script src="./Frontend/frontend-utils.js"></script>
+<script src="./Frontend/frontend-dashboard/dashboard-home.js"></script>
+<script src="./Frontend/frontend-dashboard/dashboard-add-appointment.js"></script>
+<script src="./Frontend/frontend-dashboard/dashboard-personal-commitment.js"></script>
+<script src="./Frontend/frontend-dashboard/dashboard-weekly-appointment.js"></script>
+<script src="./Frontend/frontend-dashboard/dashboard-cancellations.js"></script>
+<script src="./Frontend/frontend-dashboard/dashboard-clients-list.js"></script>
+<script src="./Frontend/frontend-dashboard/dashboard-appointments-list.js"></script>
+<script src="./Frontend/frontend-dashboard/dashboard-working-hours.js"></script>
+<script src="./Frontend/frontend-dashboard/dashboard-settings.js"></script>
+
+<script>
+  const appContainer = document.getElementById('app');
+  let userData = JSON.parse(localStorage.getItem('barber_user'));
+  let cachedAppData = null;
+
+  window.pushView = function(viewName) {
+    if (history.state?.view !== viewName) {
+      history.pushState({ view: viewName }, '', '#admin-' + viewName);
+    }
+  };
+
+  window.onpopstate = function(event) {
+    const view = event.state?.view;
+
+    // Auto-salvataggio orari se stiamo lasciando quella pagina tramite tasto indietro di sistema
+    if (document.getElementById('barber-working-hours-screen')) {
+      if (typeof saveAdminHours === 'function') saveAdminHours(null);
+    }
+
+    // Auto-salvataggio impostazioni se stiamo lasciando quella pagina
+    if (document.getElementById('barber-settings-screen')) {
+      if (typeof handleBackFromSettings === 'function') handleBackFromSettings(); // Chiamiamo la funzione che gestisce il salvataggio e il ritorno
+    }
+
+    if (!view || view === 'dashboard') {
+      renderBarberDashboardPage(true);
+    } else {
+      const viewMap = {
+        'add-appointment': renderBarberAddAppointmentPage,
+        'weekly-list': renderBarberWeeklyAppointmentsListPage,
+        'weekly-add': renderBarberWeeklyAppointmentPage,
+        'cancellations': renderBarberCancellationsPage,
+        'clients-list': renderBarberClientsListPage,
+        'appointments-list': renderBarberAppointmentsListPage,
+        'working-hours': renderBarberWorkingHoursPage,
+        'settings': renderBarberSettingsPage
+      };
+      if (viewMap[view]) viewMap[view](true);
+    }
+  };
+
+  window.onload = function() {
+    // Carichiamo sempre i dati iniziali (settings) per impostare il titolo dinamico e avere i dati pronti
+    google.script.run.withSuccessHandler(data => {
+        cachedAppData = data;
+        const bizName = (data.settings && data.settings.BUSINESS_NAME) ? data.settings.BUSINESS_NAME : 'Salone';
+        const fullTitle = bizName + " - Gestionale";
+        document.title = fullTitle;
+
+        // Genera il Manifest dinamico per lo staff
+        const getAbsUrl = (rel) => new URL(rel, window.location.href).href;
+        const manifest = {
+            "name": fullTitle,
+            "short_name": "Gestionale",
+            "description": "Pannello di controllo Salone",
+            "start_url": getAbsUrl("./admin.html"),
+            "display": "standalone",
+            "background_color": "#f0f0f0",
+            "theme_color": "#1a1a1a",
+            "icons": [
+                { "src": getAbsUrl("./Frontend/assets/icon-192.png"), "sizes": "192x192", "type": "image/png", "purpose": "any" },
+                { "src": getAbsUrl("./Frontend/assets/icon-512.png"), "sizes": "512x512", "type": "image/png", "purpose": "any" },
+                { "src": getAbsUrl("./Frontend/assets/icon-maskable.png"), "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+            ]
+        };
+        const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+        document.querySelector('link[rel="manifest"]').setAttribute('href', URL.createObjectURL(blob));
+        document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', bizName);
+
+        if (userData && userData.email && localStorage.getItem('barber_authenticated')) {
+            initBarberDashboard();
+        } else {
+            renderBarberPasswordPage(true);
+        }
+    })
+    .withFailureHandler(showNetworkError)
+    .getAppInitData(userData ? userData.email : null);
+  };
+</script>
+</body>
+</html>

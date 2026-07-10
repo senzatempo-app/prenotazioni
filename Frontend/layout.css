@@ -1,0 +1,141 @@
+/**
+ * Stili per il Layout delle Pagine
+ * Definisce la struttura e la disposizione dei contenitori principali.
+ */
+.full-screen {
+  /* Rimosso position:fixed. Ora è il contenitore principale che scorre. */
+  width: 100%;
+  max-width: 100%;
+  background: #f0f0f0;
+  display: flex; /* Aggiunto per mantenere il comportamento */
+  flex-direction: column; /* Aggiunto per mantenere il comportamento */
+  padding-top: 70px; /* Spazio per l'header fisso, ora solo qui */
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Applica margini laterali al full-screen quando contiene la registrazione */
+#registration-screen.full-screen,
+#barber-password-screen.full-screen {
+  padding-left: 25px !important;
+  padding-right: 25px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  display: flex !important;
+  padding-top: 20px !important; /* Un po' di spazio in alto */
+  justify-content: flex-start !important; /* Allinea in alto */
+  align-items: center; /* Centra orizzontalmente il .registration-content */
+} 
+
+/* Rimuove il margine superiore dai titoli h2 dentro home-content per evitare lo scroll indesiderato */
+.home-content h2 {
+    margin-top: 0;
+}
+
+.home-content,
+.storico-container {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding-bottom: 100px; /* Aggiunge spazio in fondo per la barra di navigazione di Safari */
+}
+
+.booking-container {
+  width: 100%;
+  max-width: 600px;
+  padding: 0;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding-bottom: 120px; /* Aumenta lo spazio a fine scroll */
+  min-width: 0;
+}
+
+.registration-content { 
+    padding-top: 0 !important;
+    padding-bottom: 300px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    width: 100% !important;
+    max-width: 450px !important;
+    margin: 0 auto !important;
+    flex-grow: 1 !important;
+    justify-content: flex-start !important;
+    box-sizing: border-box !important;
+    min-height: min-content !important;
+    align-items: stretch !important;
+}
+
+/* Applica limiti DIRETTAMENTE agli input e button dentro registration-content */
+#registration-screen .registration-content input,
+#registration-screen .registration-content button,
+#barber-password-screen .registration-content input,
+#barber-password-screen .registration-content button {
+    max-width: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+}
+
+.login-button {
+    margin-top: 35px !important;
+    padding: 16px 40px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.popup-overlay .booking-card {
+    border-radius: 25px !important;
+    width: 90% !important;
+    max-width: 450px !important;
+}
+
+/* Contenitore per lo spinner di caricamento a schermo intero */
+.loading-container {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 2147483647 !important;
+  background: #f0f0f0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Sovrascrive il padding-top ereditato da .full-screen per centrare lo spinner */
+.full-screen > .loading-container {
+  padding-top: 0 !important;
+}
+
+.loading-container .spinner {
+  margin: 0 !important;
+}
+
+body > .loading-container {
+  top: 0 !important;
+  left: 0 !important;
+  transform: none !important;
+}
+
+/* Contenitore per le schermate di successo/conferma */
+.success-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100vh;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}

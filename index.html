@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1a1a1a">
+  <title></title>
+  <meta name="apple-mobile-web-app-title" content="Salone">
+
+  <!-- Favicon e Icone PWA -->
+  <link rel="icon" type="image/png" href="./Frontend/assets/favicon.png">
+  <link rel="apple-touch-icon" href="./Frontend/assets/apple-touch-icon.png">
+  <link rel="manifest" href="./Frontend/manifest.json">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./Frontend/base.css">
+  <link rel="stylesheet" href="./Frontend/components.css">
+  <link rel="stylesheet" href="./Frontend/dashboard.css">
+  <link rel="stylesheet" href="./Frontend/layout.css">
+</head>
+
+<body>
+
+  <div id="app">
+    <!-- Il contenuto viene generato dinamicamente via JS -->
+  </div>
+
+  <script src="./Frontend/api-bridge.js"></script>
+  <script src="./Frontend/frontend-utils.js"></script>
+  <script src="./Frontend/frontend-client/client-home.js"></script>
+  <script src="./Frontend/frontend-client/client-add-appointment.js"></script>
+  <script src="./Frontend/frontend-client/client-appointments-list.js"></script>
+
+  <script>
+    // Stato globale dell'applicazione
+    let selectedService = null;
+    let availableSlot = null;
+    let cachedAppData = null; // Cache per i dati live
+    let isFetchingInitData = false; // Impedisce chiamate duplicate
+    const appContainer = document.getElementById('app');
+    let userData = JSON.parse(localStorage.getItem('client_user'));
+
+    /**
+     * Gestione Navigazione SPA (History API)
+     * Permette ai tasti "Indietro" degli smartphone di funzionare correttamente.
+     */
+    window.pushView = function (viewName) {
+      if (history.state?.view !== viewName) {
+        history.pushState({ view: viewName }, '', '#' + viewName);
+      }
+    };
+
+    window.onpopstate = function (event) {
+      const view = event.state?.view;
+      if (!view || view === 'home') {
+        renderHomePage(true); // true = evita di creare un loop nella history
+      } else {
+        const viewMap = {
+          'registration': renderRegistrationPage,
+          'prenotazione': renderPrenotazionePage,
+          'storico': fetchUserBookings,
+          'contatti': renderContattiPage
+        };
+        if (viewMap[view]) viewMap[view](true);
+      }
+    };
+ 
+    window.onload = function () {
+      // Mostriamo subito uno spinner mentre carichiamo le impostazioni (Titolo, etc.)
+      appContainer.innerHTML = '<div class="loading-container"><div style="display: flex; flex-direction: column; align-items: center;"><div class="spinner"></div></div></div>';
+
+      google.script.run.withSuccessHandler(data => {
+        cachedAppData = data;
+        const bizName = (data.settings && data.settings.BUSINESS_NAME) ? data.settings.BUSINESS_NAME : 'Salone';
+        document.title = bizName;
+
+        // Genera il Manifest dinamico per mostrare il nome del Business sul telefono
+        const getAbsUrl = (rel) => new URL(rel, window.location.href).href;
+        const manifest = {
+          "name": bizName,
+          "short_name": bizName,
+          "description": "Prenota il tuo appuntamento",
+          "start_url": getAbsUrl("./index.html"),
+          "display": "standalone",
+          "background_color": "#f0f0f0",
+          "theme_color": "#1a1a1a",
+          "icons": [
+            { "src": getAbsUrl("./Frontend/assets/icon-192.png"), "sizes": "192x192", "type": "image/png", "purpose": "any" },
+            { "src": getAbsUrl("./Frontend/assets/icon-512.png"), "sizes": "512x512", "type": "image/png", "purpose": "any" },
+            { "src": getAbsUrl("./Frontend/assets/icon-maskable.png"), "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+          ]
+        };
+        const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+        document.querySelector('link[rel="manifest"]').setAttribute('href', URL.createObjectURL(blob));
+        document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', bizName);
+
+        // In attesa che gli script siano caricati
+        setTimeout(() => {
+          if (userData && userData.telefono) {
+            renderHomePage(true);
+            history.replaceState({ view: 'home' }, '', '#home');
+          } else {
+            renderRegistrationPage(true);
+            history.replaceState({ view: 'registration' }, '', '#registration');
+          }
+        }, 1000);
+      })
+        .withFailureHandler(showNetworkError)
+        .getAppInitData(userData ? userData.email : null);
+    };
+  </script>
+</body>
+
+</html>

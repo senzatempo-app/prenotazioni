@@ -1,0 +1,321 @@
+/* Stili per Componenti Riutilizzabili */
+button { 
+  padding: 12px; 
+  border: 2px solid #1a1a1a; 
+  border-radius: 25px; 
+  background: transparent; 
+  color: #1a1a1a; 
+  cursor: pointer; 
+  transition: all 0.5s ease; 
+  font-size: 1em;
+  font-weight: 600;
+  outline: none;
+}
+
+input { 
+  padding: 15px 18px !important;
+  border: 1.5px solid #ddd !important;
+  border-radius: 14px !important;
+  font-size: 1em !important;
+  width: 100% !important;
+  user-select: text;
+  -webkit-user-select: text;
+  background: white !important;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+}
+
+/* Sovrascrive gli stili generici per i checkbox e radio, che non devono avere padding o bordi complessi */
+input[type="checkbox"],
+input[type="radio"] {
+  padding: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  width: auto !important; /* Resetta la larghezza dal selettore 'input' generico */
+}
+
+input::placeholder {
+  color: #aaa;
+  opacity: 0.8;
+}
+
+input:focus {
+  border-color: #8A9A5B !important;
+  box-shadow: 0 0 0 3px rgba(138, 154, 91, 0.15) !important;
+  outline: none !important;
+}
+
+.card-title {
+  font-weight: 700; font-size: 0.85em; text-transform: uppercase;
+  letter-spacing: 1px; margin-bottom: 15px; color: #888;
+}
+
+/* Servizi */
+.services-scroll { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px; width: 100%; }
+.service-card {
+  width: 200px; height: 200px; flex-shrink: 0; border-radius: 20px;
+  position: relative; overflow: hidden; background-color: #eee;
+  background-size: cover; background-position: center;
+  cursor: pointer; transition: all 0.3s ease;
+}
+.service-card.active { 
+  border: 4px solid #1a1a1a;
+  transform: scale(0.98); 
+}
+.services-scroll:has(.service-card.active) .service-card:not(.active) { filter: brightness(0.7); opacity: 0.6; }
+.service-card .service-name {
+  position: absolute; bottom: 0; left: 0; width: 100%; padding: 10px 5px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.85));
+  color: white; font-size: 0.75em; font-weight: 700; text-align: center;
+}
+
+/* Giorni e Orari */
+.days-scroll { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px; width: 100%; }
+.day-pill {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 60px;
+  padding: 15px 5px; border: 1.5px solid #ccc; border-radius: 35px; cursor: pointer; flex-shrink: 0;
+}
+.day-pill.active { border-color: #1a1a1a; }
+.day-name { font-size: 0.7em; font-weight: 700; text-transform: uppercase; color: #aaa; }
+.day-num { font-size: 1.1em; font-weight: 700; color: #1a1a1a; }
+
+.barbers-grid { display: flex; gap: 15px; overflow-x: auto; width: 100%; }
+.barber-col { flex: 1; min-width: 140px; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+
+.barber-info-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f4f4f9;
+}
+
+.barber-photo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #eee;
+}
+
+.barber-name-header { text-align: center; font-weight: 800; font-size: 1.1em; }
+
+.time-slot {
+  padding: 8px 20px; border: 1.5px solid #ccc; border-radius: 30px;
+  text-align: center; font-size: 0.9em; font-weight: 700; cursor: pointer;
+  min-width: 100px; align-self: center;
+}
+.time-slot.active { border-color: #1a1a1a; color: #1a1a1a; }
+
+/* CTA Book Button */
+.cta-container {
+  position: fixed; bottom: 30px; left: 0; width: 100%; padding: 0 20px;
+  display: flex; justify-content: center; pointer-events: none; z-index: 12000; transition: transform 0.3s ease;
+}
+#main-book-btn {
+  pointer-events: auto; background: #1a1a1a; color: white;
+  padding: 15px 40px; border-radius: 40px;
+  font-weight: 700; border: none; box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+  text-transform: uppercase; letter-spacing: 1px;
+}
+
+.main-opt-btn {
+  height: auto !important; padding: 30px !important; background: white !important;
+  border: 1px solid #eee !important; box-shadow: 0 4px 10px rgba(0,0,0,0.05) !important;
+  color: #1a1a1a !important; width: 100%;
+}
+
+/* Booking Cards Cliente */
+.booking-card {
+  background: white; padding: 25px; border-radius: 20px; margin-bottom: 15px;
+  display: flex; flex-direction: column; align-items: flex-start;
+  border: 1px solid #eee; width: 100%;
+}
+
+/* Usiamo !important per garantire che questi stili sovrascrivano l'animazione di fade-in */
+.booking-card.past-booking {
+  background-color: #f8f9fa; /* Sfondo leggermente più scuro */
+  filter: grayscale(60%);   /* Aumenta l'effetto bianco e nero */
+  opacity: 0.7;             /* Leggermente meno opaco per scurire */
+}
+
+.fade-in.past-booking {
+  animation-name: fadeInPast; /* Usa un'animazione dedicata che termina a opacità 0.7 */
+}
+
+.status-badge.confermato { color: #28a745; font-weight: bold; font-size: 0.8em; }
+.status-badge.cancellation-requested { color: #f39c12; font-weight: bold; font-size: 0.8em; }
+.cancel-booking-btn {
+  background: transparent !important; color: #dc3545 !important; border: none !important;
+  padding: 15px 0 0 0 !important; font-size: 0.85em !important; font-weight: 700 !important;
+  text-transform: uppercase;
+}
+.cancel-booking-btn.cancellation-requested { color: #f39c12 !important; }
+
+/* Next Appointment Card */
+.next-appointment-card {
+  background-color: #1a1a1a;
+  background-size: 100% 100%, 50% auto;
+  background-position: center, right center;
+  background-repeat: no-repeat;
+  color: white; padding: 30px 25px; border-radius: 20px; min-height: 200px;
+  display: flex; align-items: center;
+}
+.next-content-left { max-width: 70%; }
+.next-label { display: block; font-size: 0.75em; text-transform: uppercase; opacity: 0.7; margin-bottom: 15px; }
+.next-details { font-size: 1.3em; font-weight: bold; text-transform: capitalize; margin-bottom: 10px; }
+
+.next-date { margin-bottom: 5px; opacity: 0.9; }
+
+/* Popups & Overlays */
+.popup-overlay {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px); z-index: 19999;
+  display: flex; justify-content: center; align-items: center;
+}
+
+/* Impedisce lo scroll e l'interazione con il contenuto dietro al popup */
+.body-popup-open {
+  overflow: hidden !important;
+  position: fixed !important; /* Blocca lo scroll su iOS */
+  width: 100% !important;     /* Mantiene la larghezza corretta */
+  pointer-events: none !important;
+}
+
+/* Il popup stesso deve poter ricevere eventi */
+.body-popup-open .popup-overlay {
+  pointer-events: auto;
+}
+
+/* Contatti */
+.contact-card { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #eee; }
+.contact-name { font-weight: 700; font-size: 1.1em; color: #1a1a1a; }
+.contact-sub { font-size: 0.85em; color: #888; text-transform: uppercase; }
+
+/* Griglia Barbieri nella pagina Contatti */
+.barbers-grid-contact {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0; /* Eliminiamo il gap per garantire simmetria assoluta */
+  width: 100%;
+}
+
+.barber-contact-card {
+  background: transparent;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px; /* Spazio interno che crea il distacco tra le due card */
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.barber-contact-card:active { transform: scale(0.96); }
+
+.barber-card-img {
+  width: 85%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 12px;
+  background: #f9f9f9;
+}
+
+.barber-card-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  justify-content: center;
+}
+
+.barber-card-name {
+  font-size: 0.95em;
+  font-weight: 700;
+  color: #1a1a1a;
+  text-align: center;
+}
+
+/* Spinner */
+.spinner {
+  width: 40px; height: 40px; border: 4px solid rgba(138, 154, 91, 0.15);
+  border-top: 4px solid #8A9A5B; border-radius: 50%;
+  animation: spin 1s linear infinite; margin: 20px auto;
+}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* Popup di Avviso Personalizzato */
+.popup-content {
+  background: white;
+  padding: 25px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+@keyframes fadeInPast {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.7;
+  }
+}
+
+.popup-title {
+  font-size: 1.2em;
+  margin: 0;
+  color: #1a1a1a;
+}
+
+.popup-body p {
+  color: #666;
+  font-size: 0.95em;
+  line-height: 1.5;
+}
+
+.popup-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  width: 100%;
+}
+
+.popup-action-main, .popup-action-secondary, .popup-action-danger {
+  flex: 1; border: none; padding: 12px; font-weight: 700; text-transform: uppercase; cursor: pointer;
+  background: transparent; /* Uniformato per tutti i pulsanti di azione */
+}
+.popup-action-main { color: #1a1a1a; }
+.popup-action-secondary { color: #666; }
+.popup-action-danger { color: #dc3545; }
+.conflict-list { max-height: 150px; overflow-y: auto; margin-bottom: 10px; border: 1px solid #eee; border-radius: 10px; background: #fafafa; }
+
+
+/* Stile "Pill" per selettori e tab */
+.view-selector, .admin-tabs-container {
+    border-radius: 30px !important;
+}
+.view-selector button, .admin-tab-btn {
+    border-radius: 25px !important;
+}
+
+
+/* Stile per il pulsante "Indietro" nell'header */
+.header-back-btn {
+  position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+  border: none; background: none; color: #8A9A5B;
+  padding: 0; display: flex; align-items: center; cursor: pointer;
+}
