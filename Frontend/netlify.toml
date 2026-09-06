@@ -14,8 +14,13 @@
   to = "/frontend-dashboard/admin.html"
   status = 200
 
+[[redirects]]
+  from = "/frontend-dashboard/*"
+  to = "/frontend-dashboard/admin.html"
+  status = 200
+
 # Reindirizzamento per tutte le altre rotte verso la SPA Clienti
 [[redirects]]
   from = "/*"
-  to = "/frontend-client/index.html"
+  to = "/index.html"
   status = 200

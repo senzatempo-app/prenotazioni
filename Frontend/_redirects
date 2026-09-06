@@ -1,3 +1,4 @@
 /api/*  https://script.google.com/macros/s/AKfycbw2qW3zlen0UJ4urE9HCHsD-bMxGSf9wiXoVzPTGuRMdGOwOV35JlWiWORfGNvRbRJP/exec  200
 /admin  /frontend-dashboard/admin.html  200
-/*  /frontend-client/index.html  200
+/frontend-dashboard/*  /frontend-dashboard/admin.html  200
+/*  /index.html  200
