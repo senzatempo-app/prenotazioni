@@ -1,6 +1,6 @@
 {
-  "name": "App Prenotazioni",
-  "short_name": "App Prenotazioni",
+  "name": "Prenotazioni",
+  "short_name": "Prenotazioni",
   "description": "Applicazione per la gestione degli appuntamenti",
   "start_url": "/prenotazioni/",
   "scope": "/prenotazioni/",

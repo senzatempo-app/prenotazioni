@@ -82,8 +82,8 @@
         const startUrl = location.origin + location.pathname;
         const scope = location.origin + location.pathname.replace(/\/[^\/]*$/, '/') ;
         const manifest = {
-          "name": bizName,
-          "short_name": bizName,
+          "name": "Prenotazioni",
+          "short_name": "Prenotazioni",
           "description": "Prenota il tuo appuntamento",
           "start_url": startUrl,
           "scope": scope,
@@ -98,7 +98,7 @@
         };
         const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
         document.querySelector('link[rel="manifest"]').setAttribute('href', URL.createObjectURL(blob));
-        document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', bizName);
+        document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', 'Prenotazioni');
 
         // In attesa che gli script siano caricati
         setTimeout(() => {
