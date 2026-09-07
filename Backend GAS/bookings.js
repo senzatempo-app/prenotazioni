@@ -539,6 +539,8 @@ function getBarberAppointments(barberId) {
   const data = sheet.getDataRange().getValues();
   const settings = getSettings();
   const services = getServices();
+  const historyDays = parseInt(settings.BOOKING_HISTORY, 10) || 90;
+  const windowDays = parseInt(settings.BOOKING_WINDOW_DAYS, 10) || 10;
   const clientsSheet = getSs().getSheetByName('Clients');
   const clientsData = clientsSheet.getDataRange().getValues();
 
@@ -925,9 +927,9 @@ function getWeeklyConflictsPreview(barberId, dayName, timeStr, duration, service
  */
 function cleanupOldBookings() {
   const settings = getSettings();
-  // Legge i giorni di storico e aggiunge un margine di 30 giorni prima di eliminare.
+  // Legge i giorni di storico: eliminiamo tutto più vecchio del valore impostato.
   const historyDays = parseInt(settings.BOOKING_HISTORY, 10) || 90;
-  const cleanupDaysThreshold = historyDays + 30; // Elimina appuntamenti più vecchi di 120 giorni (default)
+  const cleanupDaysThreshold = historyDays; // Elimina appuntamenti più vecchi di BOOKING_HISTORY giorni
 
   const now = new Date();
   const sheet = getSs().getSheetByName('Bookings');

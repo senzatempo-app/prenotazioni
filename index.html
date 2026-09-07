@@ -77,13 +77,16 @@
         const bizName = (data.settings && data.settings.BUSINESS_NAME) ? data.settings.BUSINESS_NAME : 'Salone';
         document.title = bizName;
 
-        // Genera il Manifest dinamico per mostrare il nome del Business sul telefono
+        // Genera il Manifest dinamico per mostrare il nome del Business sul telefono (robusto per domini personalizzati)
         const getAbsUrl = (rel) => new URL(rel, window.location.href).href;
+        const startUrl = location.origin + location.pathname;
+        const scope = location.origin + location.pathname.replace(/\/[^\/]*$/, '/') ;
         const manifest = {
           "name": bizName,
           "short_name": bizName,
           "description": "Prenota il tuo appuntamento",
-          "start_url": getAbsUrl("./index.html"),
+          "start_url": startUrl,
+          "scope": scope,
           "display": "standalone",
           "background_color": "#f0f0f0",
           "theme_color": "#1a1a1a",

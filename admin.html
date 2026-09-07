@@ -84,21 +84,24 @@
         const fullTitle = bizName + " - Gestionale";
         document.title = fullTitle;
 
-        // Genera il Manifest dinamico per lo staff
+        // Genera il Manifest dinamico per lo staff (robusto per domini personalizzati)
         const getAbsUrl = (rel) => new URL(rel, window.location.href).href;
+        const startUrl = location.origin + location.pathname;
+        const scope = location.origin + location.pathname.replace(/\/[^\/]*$/, '/') ;
         const manifest = {
-            "name": fullTitle,
-            "short_name": "Gestionale",
-            "description": "Pannello di controllo Salone",
-            "start_url": getAbsUrl("./admin.html"),
-            "display": "standalone",
-            "background_color": "#f0f0f0",
-            "theme_color": "#1a1a1a",
-            "icons": [
-                { "src": getAbsUrl("./Frontend/assets/icon-192.png"), "sizes": "192x192", "type": "image/png", "purpose": "any" },
-                { "src": getAbsUrl("./Frontend/assets/icon-512.png"), "sizes": "512x512", "type": "image/png", "purpose": "any" },
-                { "src": getAbsUrl("./Frontend/assets/icon-maskable.png"), "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
-            ]
+          "name": fullTitle,
+          "short_name": "Gestionale",
+          "description": "Pannello di controllo Salone",
+          "start_url": startUrl,
+          "scope": scope,
+          "display": "standalone",
+          "background_color": "#f0f0f0",
+          "theme_color": "#1a1a1a",
+          "icons": [
+            { "src": getAbsUrl("./Frontend/assets/icon-192.png"), "sizes": "192x192", "type": "image/png", "purpose": "any" },
+            { "src": getAbsUrl("./Frontend/assets/icon-512.png"), "sizes": "512x512", "type": "image/png", "purpose": "any" },
+            { "src": getAbsUrl("./Frontend/assets/icon-maskable.png"), "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+          ]
         };
         const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
         document.querySelector('link[rel="manifest"]').setAttribute('href', URL.createObjectURL(blob));
