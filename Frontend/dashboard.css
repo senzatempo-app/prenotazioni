@@ -132,16 +132,32 @@
   height: 32px; /* Altezza fissa per allineamento */
   padding: 2px;
 }
+
+/* Variabile per larghezza controlli: usata per uniformare zoom-controls e today button */
+:root { --calendar-control-width: 92px; }
+
+/* Uniforma larghezza e centratura dei controlli */
+.calendar-zoom-controls, .today-btn {
+  box-sizing: border-box;
+  width: var(--calendar-control-width);
+  min-width: var(--calendar-control-width);
+  display: inline-flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.calendar-zoom-controls { padding: 2px 4px; }
+.today-btn { padding: 0 8px; }
 .zoom-btn {
-  width: 28px; height: 28px; border: none; background: transparent;
-  font-size: 1.2em; font-weight: bold; color: #555;
+  width: 24px; height: 24px; border: none; background: transparent;
+  font-size: 1.1em; font-weight: bold; color: #555;
   display: flex; align-items: center; justify-content: center;
   border-radius: 6px; cursor: pointer;
 }
 .zoom-btn:hover { background-color: #e0e0e0; }
 .zoom-btn:active { transform: scale(0.9); }
 #zoom-level-label {
-  font-size: 0.75em; font-weight: 700; color: #333; padding: 0 4px; min-width: 40px; text-align: center;
+  font-size: 0.75em; font-weight: 700; color: #333; padding: 0 2px; min-width: 34px; text-align: center;
 }
 
 .calendar-controls-row {

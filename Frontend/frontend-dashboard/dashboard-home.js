@@ -610,7 +610,15 @@ function renderCustomCalendar(appointments, isSilent = false, savedScrollTop = n
         if (currentCalendarView === 'week') {
             periodLabel.innerText = `${viewStart.getDate()} ${months[viewStart.getMonth()]} - ${viewEnd.getDate()} ${months[viewEnd.getMonth()]}`;
         } else {
-            periodLabel.innerText = `${viewStart.getDate()} ${monthsFull[viewStart.getMonth()]} ${viewStart.getFullYear()}`;
+            // Per la vista "day" mostriamo il mese in modo differente a seconda della larghezza schermo:
+            // - schermi piccoli (smartphone): abbreviazione 3 lettere, es. "Set"
+            // - schermi grandi (iPad/PC): mese esteso, es. "Settembre"
+            const isSmallScreen = window.matchMedia && window.matchMedia('(max-width: 767px)').matches;
+            if (isSmallScreen) {
+                periodLabel.innerText = `${months[viewStart.getMonth()]}`; // 'Set'
+            } else {
+                periodLabel.innerText = `${monthsFull[viewStart.getMonth()]}`; // 'Settembre'
+            }
         }
     }
 
