@@ -317,6 +317,23 @@
   z-index: 6; /* Sopra la time-column */
 }
 
+/* Vista singolo giorno: centriamo il testo dell'header sull'intera larghezza della card calendario */
+.custom-calendar:not(.calendar-view-week) .calendar-header {
+  display: grid;
+  grid-template-columns: 40px 1fr; /* mantiene lo spazio della time-column ma permette al giorno di estendersi */
+  align-items: center;
+}
+.custom-calendar:not(.calendar-view-week) .time-column-header {
+  visibility: hidden; /* mantiene il gap ma non mostra il box vuoto */
+}
+.custom-calendar:not(.calendar-view-week) .day-header {
+  grid-column: 1 / -1; /* estende il giorno su entrambe le colonne */
+  border-right: none; /* rimuove il bordo destro che non serve con una singola colonna */
+  padding-left: 0;
+  padding-right: 0;
+  text-align: center; /* assicura il centraggio */
+}
+
 .time-column-header {
   width: 40px; /* Stessa larghezza della time-column */
   flex-shrink: 0;
