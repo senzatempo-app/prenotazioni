@@ -83,7 +83,21 @@ function openPopup(overlay) {
                 }
             }
         });
-        if (firstFocusableElement) firstFocusableElement.focus();
+        // Evitiamo di mettere automaticamente il focus su input/textarea altrimenti
+        // sui dispositivi mobili si apre la tastiera. Se il primo elemento focalizzabile
+        // è un input/select/textarea, invece di focalizzarlo puntiamo il focus sul
+        // contenitore del popup per abilitare il focus trapping senza aprire la tastiera.
+        if (firstFocusableElement) {
+            const tag = firstFocusableElement.tagName.toLowerCase();
+            const isFormField = (tag === 'input' || tag === 'textarea' || tag === 'select');
+            if (!isFormField) {
+                firstFocusableElement.focus();
+            } else {
+                // assegniamo tabindex al popup e focalizziamo il popup stesso
+                if (!popup.hasAttribute('tabindex')) popup.setAttribute('tabindex', '-1');
+                popup.focus();
+            }
+        }
     }
 }
 
