@@ -479,6 +479,23 @@ function getBarberColumnsHtml(allSlots, targetDay, barbers, onSelectSlotName) {
             ? bSlots.map(s => `<div class="time-slot" onclick="${onSelectSlotName}(this, '${s.iso}', '${s.barberId}', '${s.formatted}', '${s.time}', '${s.barberName}', '${s.clientEmail}', '${s.serviceName}')">${s.time}</div>`).join('')
             : `<p style="font-size: 0.8em; text-align: center; color: #dc3545; font-weight: 600; margin-top: 10px;">Non disponibile</p>`;
 
+        // Se siamo nella dashboard barbiere (onSelectSlotName === 'selectSlotForAdd'),
+        // aggiungiamo in fondo alla colonna la possibilità di inserire un orario personalizzato
+        let customHtml = '';
+        try {
+            if (onSelectSlotName === 'selectSlotForAdd') {
+                const safeName = (barber.nome || '').replace(/'/g, "\\'");
+                                customHtml = `
+                                        <div class="custom-time-area" style="margin-top:12px; text-align:center;">
+                                            <label style="font-size:0.8em; color:#666; display:block; margin-bottom:6px;">Orario personalizzato</label>
+                                            <div style="display:flex; gap:8px; justify-content:center; align-items:center;">
+                                                <input type="text" inputmode="numeric" pattern="[0-9:]*" maxlength="5" placeholder="HH:MM" id="custom-time-${bId}" class="time-slot custom-time-input" onfocus="onCustomTimeFocus(this)" oninput="selectCustomSlotForAdd('${bId}', '${safeName}', this, event)" style="min-width:80px; width: auto;" />
+                                            </div>
+                                        </div>
+                                `;
+            }
+        } catch (e) { customHtml = ''; }
+
         const bPhoto = barber.foto || "https://via.placeholder.com/100/8A9A5B/ffffff?text=" + barber.nome.charAt(0);
 
         html += `
@@ -488,6 +505,7 @@ function getBarberColumnsHtml(allSlots, targetDay, barbers, onSelectSlotName) {
                     <div class="barber-name-header" style="font-size:0.85em;">${barber.nome}</div>
                 </div>
                 ${slotsHtml}
+                ${customHtml}
             </div>`;
     }
     return html;

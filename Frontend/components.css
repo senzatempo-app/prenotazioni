@@ -109,6 +109,30 @@ input:focus {
 }
 .time-slot.active { border-color: #1a1a1a; color: #1a1a1a; }
 
+.custom-time-area { margin-top: 8px; }
+.custom-time-input {
+  /* Match .time-slot exactly for visual consistency */
+  padding: 8px 20px !important;
+  border: 1.5px solid #ccc !important;
+  border-radius: 30px !important;
+  text-align: center !important;
+  font-size: 0.9em !important;
+  font-weight: 700 !important;
+  cursor: text !important;
+  min-width: 100px !important;
+  width: 100px !important;
+  box-sizing: border-box !important;
+  background: transparent !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  line-height: 1 !important;
+}
+.custom-time-input.active, .custom-time-input:focus { border-color: #1a1a1a !important; color: #1a1a1a !important; outline: none !important; }
+/* Override generic input width rule to keep pill size */
+.custom-time-input { width: auto !important; }
+
 /* CTA Book Button */
 .cta-container {
   position: fixed; bottom: 30px; left: 0; width: 100%; padding: 0 20px;

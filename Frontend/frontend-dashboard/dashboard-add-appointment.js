@@ -339,10 +339,127 @@ function renderBarberColumnsForAdd() {
 }
 
 function selectSlotForAdd(el, iso, barberId, formatted, time, barberName) {
+    // Deselect all visual slots (incluse eventuali custom inputs)
     document.querySelectorAll('#add-barbers-columns .time-slot').forEach(s => s.classList.remove('active'));
+
+    // Clear any custom-time inputs (so è sempre chiaro quale orario è selezionato)
+    document.querySelectorAll('#add-barbers-columns .custom-time-input').forEach(i => {
+        try { i.value = ''; i.classList.remove('active'); } catch(e) {}
+    });
+
+    // Select the clicked standard slot
     el.classList.add('active');
     addAppState.slot = { iso, barberId, formatted, time, barberName };
     document.getElementById('add-confirm-btn').classList.remove('hidden');
+}
+
+/**
+ * Seleziona un orario personalizzato inserito manualmente dal barbiere.
+ * @param {string} barberId
+ * @param {string} barberName
+ * @param {HTMLElement} btnEl
+ */
+function selectCustomSlotForAdd(barberId, barberName, inputEl, ev) {
+    // Ensure day and service selected
+    if (!addAppState.day) return showCustomAlert('Seleziona un giorno', 'Seleziona prima il giorno in cui vuoi inserire l\'appuntamento.');
+    if (!addAppState.service) return showCustomAlert('Seleziona un servizio', 'Seleziona prima il servizio.');
+
+    const val = (inputEl && inputEl.value) ? inputEl.value.trim() : '';
+    // If user is deleting content, avoid aggressive reformatting to keep backspace predictable
+    const inputType = ev && ev.inputType ? ev.inputType : null;
+    if (inputType && inputType.toString().toLowerCase().startsWith('delete')) {
+        const digits = val.replace(/[^0-9]/g, '').substring(0,4);
+        if (digits.length === 0) {
+            inputEl.classList.remove('active');
+            addAppState.slot = null;
+            document.getElementById('add-confirm-btn').classList.add('hidden');
+        } else {
+            // keep editing state, do not auto-select until 4 digits
+            inputEl.classList.remove('active');
+            addAppState.slot = null;
+            document.getElementById('add-confirm-btn').classList.add('hidden');
+        }
+        return;
+    }
+
+    // Accept formats like HH:MM or H:MM or HHMM
+    let time = '';
+    if (!val) {
+        // empty -> deselect
+        inputEl.classList.remove('active');
+        // hide confirm if no other slot selected
+        const anyActive = document.querySelector('#add-barbers-columns .time-slot.active');
+        if (!anyActive) document.getElementById('add-confirm-btn').classList.add('hidden');
+        addAppState.slot = null;
+        return;
+    }
+
+    // Normalize digits and auto-insert colon to enforce HH:MM while keeping field editable
+    let digits = val.replace(/[^0-9]/g, '');
+    digits = digits.substring(0,4); // limit to HHMM
+    let computed = '';
+    if (digits.length === 0) {
+        // empty -> deselect and clear slot
+        inputEl.classList.remove('active');
+        addAppState.slot = null;
+        document.getElementById('add-confirm-btn').classList.add('hidden');
+        return;
+    } else if (digits.length === 1) {
+        computed = digits;
+    } else if (digits.length === 2) {
+        // show colon after hours as requested
+        computed = digits + ':';
+    } else if (digits.length === 3) {
+        computed = digits.substring(0,2) + ':' + digits.substring(2);
+    } else { // 4
+        computed = digits.substring(0,2) + ':' + digits.substring(2);
+    }
+
+    // write back formatted HH:MM to input so user sees colon inserted
+    inputEl.value = computed;
+    time = computed;
+
+    // Only proceed to select when we have full HHMM (4 digits)
+    const rawDigits = val.replace(/[^0-9]/g, '').substring(0,4);
+    if (rawDigits.length < 4) {
+        inputEl.classList.remove('active');
+        addAppState.slot = null;
+        document.getElementById('add-confirm-btn').classList.add('hidden');
+        return;
+    }
+
+    // validate hours/minutes
+    const parts = time.split(':');
+    const hh = parseInt(parts[0], 10);
+    const mm = parseInt(parts[1], 10);
+    if (isNaN(hh) || isNaN(mm) || hh < 0 || hh > 23 || mm < 0 || mm > 59) {
+        inputEl.classList.remove('active');
+        addAppState.slot = null;
+        document.getElementById('add-confirm-btn').classList.add('hidden');
+        return;
+    }
+
+    // Deselect other slots and inputs
+    document.querySelectorAll('#add-barbers-columns .time-slot').forEach(s => s.classList.remove('active'));
+
+    // Mark input as active (pill style) and set slot
+    inputEl.classList.add('active');
+
+    const iso = `${addAppState.day}T${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}:00`;
+    const formatted = `${formatDateToItalian(addAppState.day)} ${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
+
+    addAppState.slot = { iso, barberId, formatted, time: `${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`, barberName };
+    document.getElementById('add-confirm-btn').classList.remove('hidden');
+}
+
+function onCustomTimeFocus(inputEl) {
+    // When user focuses the custom input, deselect any standard slots to make clear
+    // which time will be used. Keep the custom input value intact.
+    document.querySelectorAll('#add-barbers-columns .time-slot:not(.custom-time-input)').forEach(s => s.classList.remove('active'));
+    // hide confirm until a valid time is entered
+    addAppState.slot = null;
+    const btn = document.getElementById('add-confirm-btn');
+    if (btn) btn.classList.add('hidden');
 }
 
 function handleDashboardFinalBooking() {
